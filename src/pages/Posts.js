@@ -38,7 +38,7 @@ export default class Posts extends Component {
             })
             .then(data => {
                 this.setState({posts: data});
-                console.log(data)
+                console.log('hello')
             });
     }
 
