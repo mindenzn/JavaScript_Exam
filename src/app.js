@@ -1,7 +1,7 @@
 import './scss/main.scss'
 import './scss/main.scss'
 import {mount} from "./library/mount";
-import h from "./library/hyperScript";
+import h from "./library/hyperscript";
 import Main from "./Main";
 
 
