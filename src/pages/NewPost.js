@@ -1,13 +1,13 @@
 import Component from "../library/Component";
 import h from "../library/hyperscript";
-// import {user} from "../login";
-import Navigation from "../components/Navigation";
+import {url} from "../Main";
+
 
 export default class NewPost extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            inputs: [
+            newInputs: [
                 {
                     labelText: 'ANTRAŠTĖ',
                     placeholder: 'Ką parduodate arba ieškote',
@@ -19,7 +19,8 @@ export default class NewPost extends Component {
                 {
                     labelText: 'SKELBIMAS',
                     placeholder: 'Jūsų tekstas',
-                    name: 'body'
+                    name: 'body',
+                    class: 'main__form-textarea'
                 }
 
             ],
@@ -39,8 +40,8 @@ export default class NewPost extends Component {
     }
 
     newPost(e) {
-        e.preventDefault();
-        fetch('http://rest.stecenka.lt/api/skelbimai', {
+        e.preventDefault()
+        fetch(url +'/api/skelbimai', {
             headers: {
                 'Content-type': 'application/json',
                 'Authorization': JSON.parse(localStorage.getItem('user')).token
@@ -48,6 +49,10 @@ export default class NewPost extends Component {
             method: 'POST',
             body: JSON.stringify(this.state.newPost)
         })
+            .then( () =>{
+                this.props.route('posts')
+        })
+
     }
 
     handleInput (name, value) {
@@ -55,14 +60,15 @@ export default class NewPost extends Component {
     }
 
     render() {
-        const inputs = this.state.inputs.map(input => {
-            return h('label', {}, input.labelText,
+        const newPostInput = this.state.newInputs.map(input => {
+            return h('label', {class:'main__form-label'}, input.labelText,
                 h(
                     'input',
                     {
                         keyup: e => this.handleInput(input.name, e.target.value),
                         placeholder: input.placeholder,
-                        name: input.name
+                        name: input.name,
+                        class: input.class
                     }
                 ));
         });
@@ -70,19 +76,23 @@ export default class NewPost extends Component {
             return h('textarea', {
                 name: text.name,
                 placeholder: text.placeholder,
+                class: text.class,
                 keyup: e => this.handleInput(text.name, e.target.value),
             })
         })
         const buttons = this.state.buttons.map(button => {
             return h('button', {
                     type: button.type,
-                    name: button.name
+                    name: button.name,
+                    class: button.class
                 },
                 button.title
             )
         });
 
-        const form = h('form', {submit: (e) => {this.newPost(e)}}, ...inputs, ...textArea, ...buttons);
-        return h('div', {}, form);
+        const form = h('form', {
+            class:'main__form',
+            submit: (e) => {this.newPost(e)}}, ...newPostInput, ...textArea, ...buttons);
+        return h('div', {class: 'main__new-post'}, form);
     }
 }

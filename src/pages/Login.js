@@ -8,7 +8,8 @@ export default class Login extends Component {
         super(props);
         this.state = {
             inputs: [
-                {   class: 'inputs',
+                {
+                    class: 'inputs',
                     labelText: 'EL. PAŠTAS',
                     placeholder: 'pavyzdys@email.com',
                     type: 'email',
@@ -39,9 +40,7 @@ export default class Login extends Component {
 
     login(e) {
         e.preventDefault();
-        console.log(e);
-
-        fetch(url +'/login', {
+        fetch(url + '/login', {
             headers: {
                 'Content-type': 'application/json'
             },
@@ -54,10 +53,10 @@ export default class Login extends Component {
                 }
             })
             .then(user => {
-                if(user) {
-                    localStorage.setItem('user', JSON.stringify(user));
-                    this.props.route('posts');
-                }else{
+                if (user) {
+                    this.props.logInUser(user)
+
+                } else {
                     swal('Deja', 'Blogai suvesti duomenys', 'error')
                 }
             });
@@ -91,18 +90,18 @@ export default class Login extends Component {
             )
         });
 
-        const icon = h('i', {class:"fas fa-comments-dollar login__comment-icon"});
+        const icon = h('i', {class: "fas fa-comments-dollar login__comment-icon"});
         const question = h('h3', {}, 'Dar neturi prisijungimo?');
         const addUser = h('i', {
             class: "fas fa-user-plus login__register-icon",
             click: () => this.props.route('register')
         });
-        const title = h('h1',{class:'main__title'},'SKELBIMŲ LENTA')
+        const title = h('h1', {class: 'main__title'}, 'SKELBIMŲ LENTA')
         const iconBox = h('div', {class: 'icon-box'}, addUser)
         const form = h('form', {
             class: 'login__form',
             submit: (e) => this.login(e)
-        }, title,icon, ...inputs, ...buttons, question, iconBox);
+        }, title, icon, ...inputs, ...buttons, question, iconBox);
         return h('div', {class: 'login'}, form);
     }
 }

@@ -36,33 +36,32 @@ export default class Main extends Component {
     setUser = (user) => {
         this.setState({isLoggedIn: user});
     }
+    logInUser = (user) => {
+        localStorage.setItem('user', JSON.stringify(user));
+        this.setState({user: user, route: "posts", isLoggedIn: true})
+    }
     logout = () => {
         localStorage.removeItem('user');
         this.setState({isLoggedIn: false, route: 'login'});
+        document.body.style.height = '100vh';
     }
 
     render() {
         if (this.state.isLoggedIn) {
-            return h('main', {class: "main"}, h(Navigation, {
+            return h('main', {class: "main"},
+                h(Navigation, {
                     route: this.changeRoute,
                     setLoggedIn: this.setUser,
                     exit: this.logout
                 }),
-                this.state.route === 'newPost' ? h(NewPost) : h(Posts)
+                this.state.route === 'newPost' ? h(NewPost,{route: this.changeRoute}) : h(Posts,{route: this.changeRoute})
             );
-
         }
         if (this.state.route === "register") {
             return h(Register, {route: this.changeRoute});
         }
         if (this.state.route === "login") {
-            return h(Login, {route: this.changeRoute, setLoggedIn: this.setUser});
-        }
-        if (this.state.route === "posts") {
-            return h(Posts, {route: this.changeRoute});
-        }
-        if (this.state.route === "newPost") {
-            return h(NewPost, {route: this.changeRoute});
+            return h(Login, {route: this.changeRoute, setLoggedIn: this.setUser, logInUser: this.logInUser});
         }
     }
 }
